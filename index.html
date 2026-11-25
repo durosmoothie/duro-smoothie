@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="hu">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#174d32">
+<title>DJURO SMOOTHE – Online rendelés</title>
+<style>
+:root{--green:#174d32;--leaf:#36794a;--cream:#f8f7eb;--ink:#1c3325;--line:#dce5d9}
+*{box-sizing:border-box}body{margin:0;background:#f3f5ef;color:var(--ink);font:16px system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:760px;margin:auto;padding:18px}
+header{background:linear-gradient(130deg,#174d32,#478b50);color:white;padding:24px;border-radius:20px;box-shadow:0 8px 24px #173d2722}
+.brand{font-weight:900;font-size:clamp(26px,6vw,38px);letter-spacing:.03em}.sub{opacity:.9;margin-top:6px}
+.lang{display:flex;justify-content:flex-end;gap:8px;margin:14px 0}.lang button,.size button,.flavor{border:1px solid var(--line);background:white;border-radius:12px;padding:11px;cursor:pointer}
+button:focus,input:focus,select:focus{outline:3px solid #9dcba6;outline-offset:2px}
+.lang button.active,.size button.active,.flavor.active{border:2px solid var(--leaf);background:#eaf4e9}
+h2{font-size:20px;margin:22px 0 12px}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.flavor{text-align:left;min-width:0}.emoji{font-size:30px}.flavor strong{display:block;font-size:14px;margin-top:6px}.flavor small{color:#617367}
+.size button{width:100%;font-weight:700}.price{display:block;color:var(--leaf);margin-top:5px}
+.panel{background:white;border:1px solid var(--line);border-radius:15px;padding:15px;margin-top:14px}
+.row{display:flex;justify-content:space-between;gap:10px;align-items:center}
+input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;background:white;color:var(--ink);font:inherit;margin-top:6px}
+label{display:block;font-weight:650;font-size:14px;margin:12px 0}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.qty{display:flex;align-items:center;gap:14px}.qty button{border:1px solid var(--line);border-radius:50%;background:white;width:36px;height:36px;font-size:20px}
+.primary{width:100%;padding:14px;border:0;border-radius:12px;background:var(--green);color:white;font-weight:800;font-size:16px;cursor:pointer;margin-top:14px}
+.muted{color:#64756a;font-size:13px}.cartline{display:flex;justify-content:space-between;gap:8px;padding:7px 0;border-bottom:1px solid #edf0eb}
+.notice{background:#eaf4e9;padding:13px;border-radius:12px;margin-top:12px;white-space:pre-line}
+footer{text-align:center;color:#64756a;font-size:12px;padding:24px 0}
+@media(max-width:430px){main{padding:12px}.grid{gap:6px}.flavor{padding:8px}.cols{gap:7px}}
+</style></head>
+<body><main>
+<header><div class="brand">DJURO SMOOTHE</div><div id="tagline" class="sub">Egészségesen minden szünetben!</div><div id="tagline2" class="sub">Zdravo u svakom odmoru!</div></header>
+<div class="lang"><button id="hu" class="active">Magyar</button><button id="sr">Srpski</button></div>
+<h2 id="menuTitle">Válaszd ki a smoothie-dat!</h2>
+<div class="grid" id="flavors">
+<button class="flavor active" data-f="0"><span class="emoji">🫐</span><strong>Erdei álom</strong><small>Šumski san</small></button>
+<button class="flavor" data-f="1"><span class="emoji">🍊</span><strong>Friss koktél</strong><small>Sveži koktel</small></button>
+<button class="flavor" data-f="2"><span class="emoji">🥬</span><strong>Zöld koktél</strong><small>Zeleni koktel</small></button>
+</div>
+<div class="panel row"><div><b id="chosen">Erdei álom</b><div class="muted" id="desc">Bogyós gyümölcsös smoothie</div></div><div class="emoji" id="fruit">🫐</div></div>
+<h2 id="sizeTitle">Kiszerelés kiválasztása</h2>
+<div class="grid size">
+<button data-size="250">250 ml <span class="price" id="p250">150 RSD</span></button>
+<button data-size="350" class="active">350 ml <span class="price" id="p350">190 RSD</span></button>
+<button data-size="500">500 ml <span class="price" id="p500">240 RSD</span></button>
+</div>
+<div class="panel row"><b id="qtyTitle">Mennyiség</b><div class="qty"><button id="minus">−</button><b id="qty">1</b><button id="plus">+</button></div></div>
+<button class="primary" id="add">+ Kosárba teszem</button>
+<div class="panel">
+ <div class="row"><h2 style="margin:0" id="cartTitle">🛒 Kosár</h2><span class="muted" id="count">0 termék</span></div>
+ <div id="cart" class="muted" style="margin-top:10px">A kosarad még üres.</div>
+ <div class="row" style="border-top:1px solid var(--line);padding-top:12px;margin-top:10px"><b id="totalTitle">Összesen</b><b id="total">0 RSD</b></div>
+</div>
+<h2 id="detailsTitle">Rendelési adatok</h2>
+<label><span id="nameLabel">Tanuló neve</span><input id="student" maxlength="60" placeholder="Név / Ime"></label>
+<div class="cols">
+<label><span id="gradeLabel">Évfolyam</span><select id="grade"><option value="">–</option><option>1.</option><option>2.</option><option>3.</option><option>4.</option><option>5.</option><option>6.</option><option>7.</option><option>8.</option></select></label>
+<label><span id="sectionLabel">Osztályjel</span><select id="section"><option value="">–</option><option>a</option><option>b</option><option>c</option><option>d</option></select></label>
+</div>
+<label><span id="pickupLabel">Átvétel</span><select id="pickup"><option value="canteen">Büfében / U kantini</option><option value="class">Osztályteremben / U učionici</option></select></label>
+<label><span id="noteLabel">Megjegyzés (nem kötelező)</span><input id="note" maxlength="120" placeholder="..."></label>
+<button class="primary" id="submit">Rendelés leadása</button>
+<div id="notice" class="notice" hidden aria-live="polite"></div>
+<p class="muted" id="demoNote">Bemutatóverzió: a próbarendelés csak ezen az eszközön jelenik meg, nem jut el az iskolai büféhez.</p>
+<footer>DJURO SMOOTHE d.o.o. • Đuro Salaj / OŠ Đuro Salaj</footer>
+</main>
+<script>
+const products=[
+ {hu:"Erdei álom",sr:"Šumski san",dh:"Bogyós gyümölcsös smoothie",ds:"Smuti od bobičastog voća",icon:"🫐",p:{250:150,350:190,500:240}},
+ {hu:"Friss koktél",sr:"Sveži koktel",dh:"Citrusos-mentás smoothie",ds:"Smuti od citrusa i nane",icon:"🍊",p:{250:140,350:180,500:230}},
+ {hu:"Zöld koktél",sr:"Zeleni koktel",dh:"Zöldséges-gyümölcsös smoothie",ds:"Smuti od povrća i voća",icon:"🥬",p:{250:140,350:180,500:230}}
+];
+const T={
+ hu:{tag:"Egészségesen minden szünetben!",menu:"Válaszd ki a smoothie-dat!",size:"Kiszerelés kiválasztása",qty:"Mennyiség",add:"+ Kosárba teszem",cart:"🛒 Kosár",empty:"A kosarad még üres.",total:"Összesen",details:"Rendelési adatok",name:"Tanuló neve",grade:"Évfolyam",section:"Osztályjel",pickup:"Átvétel",note:"Megjegyzés (nem kötelező)",submit:"Rendelés leadása",canteen:"Büfében",classroom:"Osztályteremben",added:"A termék bekerült a kosárba.",required:"Kérjük, válassz terméket, és add meg a nevedet, évfolyamodat és osztályodat.",demo:"Bemutatóverzió: a próbarendelés csak ezen az eszközön jelenik meg, nem jut el az iskolai büféhez.",ok:"A próbarendelés elkészült.",item:"termék",items:"termék"},
+ sr:{tag:"Zdravo u svakom odmoru!",menu:"Izaberi svoj smuti!",size:"Izaberi veličinu",qty:"Količina",add:"+ Dodaj u korpu",cart:"🛒 Korpa",empty:"Korpa je trenutno prazna.",total:"Ukupno",details:"Podaci za porudžbinu",name:"Ime učenika",grade:"Razred",section:"Odeljenje",pickup:"Preuzimanje",note:"Napomena (nije obavezno)",submit:"Pošalji porudžbinu",canteen:"U kantini",classroom:"U učionici",added:"Proizvod je dodat u korpu.",required:"Izaberi proizvod i unesi ime, razred i odeljenje.",demo:"Demo verzija: probna porudžbina prikazuje se samo na ovom uređaju i ne stiže do školske kantine.",ok:"Probna porudžbina je kreirana.",item:"proizvod",items:"proizvoda"}
+};
+let lang="hu",f=0,s=350,q=1,cart=[];
+const $=id=>document.getElementById(id);
+function render(){
+ const t=T[lang],p=products[f];$("tagline").textContent=t.tag;$("tagline2").textContent=lang==="hu"?"Zdravo u svakom odmoru!":"Egészségesen minden szünetben!";
+ $("menuTitle").textContent=t.menu;$("sizeTitle").textContent=t.size;$("qtyTitle").textContent=t.qty;$("add").textContent=t.add;$("cartTitle").textContent=t.cart;$("totalTitle").textContent=t.total;$("detailsTitle").textContent=t.details;$("nameLabel").textContent=t.name;$("gradeLabel").textContent=t.grade;$("sectionLabel").textContent=t.section;$("pickupLabel").textContent=t.pickup;$("noteLabel").textContent=t.note;$("submit").textContent=t.submit;$("demoNote").textContent=t.demo;
+ $("hu").classList.toggle("active",lang==="hu");$("sr").classList.toggle("active",lang==="sr");
+ $("chosen").textContent=p[lang];$("desc").textContent=p[lang==="hu"?"dh":"ds"];$("fruit").textContent=p.icon;
+ document.querySelectorAll("[data-f]").forEach(b=>b.classList.toggle("active",+b.dataset.f===f));
+ document.querySelectorAll("[data-size]").forEach(b=>b.classList.toggle("active",+b.dataset.size===s));
+ [250,350,500].forEach(n=>$("p"+n).textContent=p.p[n]+" RSD");$("qty").textContent=q;
+ $("pickup").options[0].text=t.canteen+" / U kantini";$("pickup").options[1].text=t.classroom+" / U učionici";
+ const count=cart.reduce((a,x)=>a+x.q,0),sum=cart.reduce((a,x)=>a+x.q*x.price,0);
+ $("count").textContent=count+" "+(count===1?t.item:t.items);$("total").textContent=sum+" RSD";
+ $("cart").innerHTML=cart.length?cart.map((x,i)=>`<div class="cartline"><span>${x.name} · ${x.size} ml × ${x.q}</span><b>${x.price*x.q} RSD <button data-del="${i}" aria-label="Remove item">×</button></b></div>`).join(""):t.empty;
+ document.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>{cart.splice(+b.dataset.del,1);render()});
+}
+$("hu").onclick=()=>{lang="hu";render()};$("sr").onclick=()=>{lang="sr";render()};
+document.querySelectorAll("[data-f]").forEach(b=>b.onclick=()=>{f=+b.dataset.f;render()});
+document.querySelectorAll("[data-size]").forEach(b=>b.onclick=()=>{s=+b.dataset.size;render()});
+$("minus").onclick=()=>{q=Math.max(1,q-1);render()};$("plus").onclick=()=>{q=Math.min(20,q+1);render()};
+$("add").onclick=()=>{const p=products[f];cart.push({name:p[lang],size:s,q,price:p.p[s]});$("notice").hidden=false;$("notice").textContent=T[lang].added;render()};
+$("submit").onclick=()=>{
+ const name=$("student").value.trim(),grade=$("grade").value,section=$("section").value,t=T[lang];
+ if(!cart.length||!name||!grade||!section){$("notice").hidden=false;$("notice").textContent=t.required;return}
+ const total=cart.reduce((a,x)=>a+x.q*x.price,0);
+ const order={name,grade:grade+section,pickup:$("pickup").value,note:$("note").value,cart,total};
+ $("notice").hidden=false;$("notice").textContent="✓ "+t.ok+"\n"+name+" • "+grade+section+"\n"+cart.map(x=>x.name+" "+x.size+" ml × "+x.q).join("\n")+"\n"+t.total+": "+total+" RSD\n\n"+t.demo;
+ cart=[];render();
+};
+render();
+</script></body></html>
